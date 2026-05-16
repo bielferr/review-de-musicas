@@ -1,0 +1,93 @@
+async function search(q) {
+  const res = await fetch(`/songs/search?q=${encodeURIComponent(q)}`);
+  if (!res.ok) throw new Error('Failed to search');
+  const data = await res.json();
+  return data.tracks || [];
+}
+
+function createCard(track) {
+  const el = document.createElement('div');
+  el.className = 'card';
+
+  const img = document.createElement('img');
+  img.src = track.image || '';
+
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+  const title = document.createElement('h3');
+  title.textContent = track.name;
+  const subtitle = document.createElement('p');
+  subtitle.textContent = `${track.artists} — ${track.album}`;
+
+  const actions = document.createElement('div');
+  actions.className = 'actions';
+  const btn = document.createElement('button');
+  btn.className = 'btn';
+  btn.textContent = 'Review';
+  btn.onclick = () => openReview(track);
+
+  actions.appendChild(btn);
+  meta.appendChild(title);
+  meta.appendChild(subtitle);
+  el.appendChild(img);
+  el.appendChild(meta);
+  el.appendChild(actions);
+  return el;
+}
+
+function openReview(track) {
+  const rating = prompt(`Avaliação para "${track.name}" (0-10):`);
+  if (rating === null) return;
+  const num = Number(rating);
+  if (Number.isNaN(num) || num < 0 || num > 10) return alert('Nota inválida (0-10)');
+  const comment = prompt('Comentário (opcional):') || '';
+  fetch('/reviews', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ songId: track.id, songName: track.name, rating: num, comment })
+  })
+    .then(r => r.json())
+    .then(() => { loadReviews(); alert('Review salva'); })
+    .catch(() => alert('Erro ao salvar review'));
+}
+
+function renderResults(tracks) {
+  const container = document.getElementById('results');
+  container.innerHTML = '';
+  tracks.forEach(t => container.appendChild(createCard(t)));
+}
+
+async function loadReviews() {
+  const res = await fetch('/reviews');
+  const data = await res.json();
+  const list = document.getElementById('reviewsList');
+  list.innerHTML = '';
+  data.forEach(r => {
+    const li = document.createElement('li');
+    li.className = 'reviewItem';
+    li.innerHTML = `<div><strong>${r.songName}</strong><div class="small">Nota: ${r.rating} — ${r.comment}</div></div>`;
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.textContent = 'Deletar';
+    btn.onclick = async () => {
+      if (!confirm('Deletar review?')) return;
+      await fetch(`/reviews/${r.id}`, { method: 'DELETE' });
+      loadReviews();
+    };
+    li.appendChild(btn);
+    list.appendChild(li);
+  });
+}
+
+document.getElementById('btnSearch').addEventListener('click', async () => {
+  const q = document.getElementById('query').value.trim();
+  if (!q) return;
+  try {
+    const tracks = await search(q);
+    renderResults(tracks);
+  } catch (err) {
+    alert('Erro na busca');
+  }
+});
+
+window.addEventListener('load', () => loadReviews());
