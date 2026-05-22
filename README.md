@@ -1,4 +1,4 @@
-# Reviree
+# Reviem de musicas
 
 API de reviews de músicas desenvolvida com Node.js e Express, criada para um projeto acadêmico com foco em QA (Qualidade de Software).
 
