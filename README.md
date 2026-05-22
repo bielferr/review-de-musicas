@@ -1,6 +1,6 @@
 # Reviem de musicas
 
-API de reviews de músicas desenvolvida com Node.js e Express, criada para um projeto acadêmico com foco em QA (Qualidade de Software).
+API de reviews de músicas desenvolvida com Node.js e Express, criadafoco em QA (Qualidade de Software).
 
 O sistema permite pesquisar músicas através da Spotify API e criar reviews com notas e comentários.
 
