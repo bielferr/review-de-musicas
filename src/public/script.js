@@ -35,21 +35,65 @@ function createCard(track) {
   return el;
 }
 
+let currentTrack = null;
+
 function openReview(track) {
-  const rating = prompt(`Avaliação para "${track.name}" (0-10):`);
-  if (rating === null) return;
-  const num = Number(rating);
-  if (Number.isNaN(num) || num < 0 || num > 10) return alert('Nota inválida (0-10)');
-  const comment = prompt('Comentário (opcional):') || '';
-  fetch('/reviews', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ songId: track.id, songName: track.name, rating: num, comment })
-  })
-    .then(r => r.json())
-    .then(() => { loadReviews(); alert('Review salva'); })
-    .catch(() => alert('Erro ao salvar review'));
+  currentTrack = track;
+
+  document
+    .getElementById('modal')
+    .classList.remove('hidden');
+
+  document.getElementById('ratingInput').value = '';
+  document.getElementById('commentInput').value = '';
 }
+
+document.getElementById('cancelModal').onclick = () => {
+  document
+    .getElementById('modal')
+    .classList.add('hidden');
+};
+
+document.getElementById('saveReview').onclick = async () => {
+  const rating = Number(
+    document.getElementById('ratingInput').value
+  );
+
+  const comment =
+    document.getElementById('commentInput').value;
+
+  if (
+    Number.isNaN(rating) ||
+    rating < 0 ||
+    rating > 10
+  ) {
+    return alert('Nota inválida');
+  }
+
+  try {
+    await fetch('/reviews', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        songId: currentTrack.id,
+        songName: currentTrack.name,
+        rating,
+        comment
+      })
+    });
+
+    document
+      .getElementById('modal')
+      .classList.add('hidden');
+
+    loadReviews();
+
+  } catch {
+    alert('Erro ao salvar review');
+  }
+};
 
 function renderResults(tracks) {
   const container = document.getElementById('results');

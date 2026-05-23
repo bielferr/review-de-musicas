@@ -1,124 +1,212 @@
-:root {
-  --bg: #0f1724;
-  --card: #111827;
-  --muted: #9ca3af;
-  --accent: #7c3aed;
-}
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
+
 body {
-  font-family:
-    Inter,
-    Segoe UI,
-    Arial;
-  background: linear-gradient(180deg, #071028 0%, #071633 100%);
-  color: #fff;
+  background: #121212;
+  color: white;
   min-height: 100vh;
 }
+
 .container {
-  max-width: 980px;
-  margin: 32px auto;
-  padding: 20px;
+  width: 90%;
+  max-width: 1300px;
+  margin: auto;
+  padding: 40px 0;
 }
+
 h1 {
-  font-size: 28px;
-  margin-bottom: 12px;
+  font-size: 3rem;
+  margin-bottom: 30px;
+  color: #1db954;
 }
+
+.subtitle {
+  color: #aaa;
+  margin-bottom: 30px;
+  font-size: 1.1rem;
+}
+
 .search {
   display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 40px;
 }
+
 .search input {
   flex: 1;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.03);
-  color: #fff;
-}
-.search button {
-  background: var(--accent);
+  padding: 15px;
+  border-radius: 12px;
   border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  color: #fff;
-  cursor: pointer;
+  background: #222;
+  color: white;
+  font-size: 1rem;
 }
+
+.search input:focus {
+  outline: 2px solid #1db954;
+}
+
+.search button,
+.btn {
+  background: #1db954;
+  border: none;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: bold;
+}
+
+.search button:hover,
+.btn:hover {
+  transform: scale(1.05);
+  background: #18a349;
+}
+
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 12px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 25px;
+  margin-bottom: 50px;
 }
+
 .card {
-  background: rgba(255, 255, 255, 0.03);
-  padding: 12px;
-  border-radius: 10px;
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
+  background: #181818;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: 0.3s;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
 }
+
+.card:hover {
+  transform: translateY(-6px);
+  background: #202020;
+}
+
 .card img {
-  width: 64px;
-  height: 64px;
-  border-radius: 6px;
+  width: 100%;
+  height: 240px;
   object-fit: cover;
 }
-.card .meta {
-  flex: 1;
+
+.meta {
+  padding: 18px;
 }
-.card .meta h3 {
-  font-size: 14px;
-  margin-bottom: 6px;
-}
-.card .meta p {
-  color: var(--muted);
-  font-size: 13px;
+
+.meta h3 {
   margin-bottom: 8px;
+  font-size: 1.1rem;
 }
-.card .actions {
-  display: flex;
-  gap: 8px;
+
+.meta p {
+  color: #aaa;
+  font-size: 0.95rem;
 }
-.btn {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 6px 8px;
-  border-radius: 8px;
-  color: #fff;
-  cursor: pointer;
+
+.actions {
+  padding: 0 18px 18px;
 }
-.reviews {
-  margin-top: 10px;
-}
+
 .reviews h2 {
-  font-size: 18px;
-  margin-bottom: 8px;
+  margin-bottom: 20px;
+  color: #1db954;
 }
+
 #reviewsList {
-  list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 15px;
 }
+
 .reviewItem {
-  background: rgba(255, 255, 255, 0.03);
-  padding: 10px;
-  border-radius: 8px;
+  background: #1c1c1c;
+  padding: 18px;
+  border-radius: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .small {
-  font-size: 13px;
-  color: var(--muted);
+  color: #aaa;
+  margin-top: 5px;
 }
-@media (max-width: 600px) {
-  .grid {
-    grid-template-columns: 1fr;
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 999;
+}
+
+.hidden {
+  display: none;
+}
+
+.modalContent {
+  width: 90%;
+  max-width: 450px;
+
+  background: #181818;
+
+  border-radius: 20px;
+
+  padding: 25px;
+}
+
+.modalContent h2 {
+  margin-bottom: 20px;
+}
+
+.modalContent input,
+.modalContent textarea {
+  width: 100%;
+
+  background: #222;
+  color: white;
+
+  border: none;
+  border-radius: 12px;
+
+  padding: 14px;
+
+  margin-bottom: 15px;
+
+  font-size: 1rem;
+}
+
+.modalContent textarea {
+  min-height: 120px;
+  resize: none;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.secondary {
+  background: #333;
+}
+
+
+
+@media (max-width: 700px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  .search {
+    flex-direction: column;
   }
 }

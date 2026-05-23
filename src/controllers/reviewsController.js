@@ -7,6 +7,7 @@ async function create(req, res) {
       return res.status(400).json({ error: 'songId and songName are required' });
     }
 
+
     const num = Number(rating);
     if (Number.isNaN(num) || num < 0 || num > 10) {
       return res.status(400).json({ error: 'rating must be a number between 0 and 10' });
@@ -18,6 +19,9 @@ async function create(req, res) {
     console.error(err);
     res.status(500).json({ error: 'Failed to create review' });
   }
+
+
+  
 }
 
 async function list(req, res) {

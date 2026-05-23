@@ -8,8 +8,9 @@
   </head>
   <body>
     <main class="container">
-      <h1>Music Reviews</h1>
-
+    <h1>🎵 Music Reviews</h1>
+<p class="subtitle">Pesquise músicas e avalie suas favoritas.</p>
+<br>
       <section class="search">
         <input id="query" placeholder="Pesquisar músicas..." />
         <button id="btnSearch">Pesquisar</button>
@@ -22,6 +23,35 @@
         <ul id="reviewsList"></ul>
       </section>
     </main>
+
+    <div id="modal" class="modal hidden">
+      <div class="modalContent">
+        <h2>Adicionar Review</h2>
+
+        <input 
+          id="ratingInput"
+          type="number"
+          min="0"
+          max="10"
+          placeholder="Nota (0-10)"
+        />
+
+        <textarea
+          id="commentInput"
+          placeholder="Escreva sua review..."
+        ></textarea>
+
+        <div class="modalActions">
+          <button id="cancelModal" class="btn secondary">
+            Cancelar
+          </button>
+
+          <button id="saveReview" class="btn">
+            Salvar
+          </button>
+        </div>
+      </div>
+    </div>
 
     <script src="/script.js"></script>
   </body>
