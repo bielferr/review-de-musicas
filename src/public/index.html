@@ -16,6 +16,9 @@
         <button id="btnSearch">Pesquisar</button>
       </section>
 
+      <div id="loadingIndicator" class="loading hidden" role="status" aria-live="polite">Pesquisando...</div>
+      <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
       <section id="results" class="grid"></section>
 
       <section class="reviews">
@@ -25,7 +28,7 @@
     </main>
 
     <div id="modal" class="modal hidden">
-      <div class="modalContent">
+      <form id="reviewForm" class="modalContent">
         <h2>Adicionar Review</h2>
 
         <input 
@@ -42,15 +45,15 @@
         ></textarea>
 
         <div class="modalActions">
-          <button id="cancelModal" class="btn secondary">
+          <button id="cancelModal" class="btn secondary" type="button">
             Cancelar
           </button>
 
-          <button id="saveReview" class="btn">
+          <button id="saveReview" class="btn" type="submit">
             Salvar
           </button>
         </div>
-      </div>
+      </form>
     </div>
 
     <script src="/script.js"></script>

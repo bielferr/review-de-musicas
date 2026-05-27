@@ -54,7 +54,9 @@ document.getElementById('cancelModal').onclick = () => {
     .classList.add('hidden');
 };
 
-document.getElementById('saveReview').onclick = async () => {
+document.getElementById('reviewForm').addEventListener('submit', async event => {
+  event.preventDefault();
+
   const rating = Number(
     document.getElementById('ratingInput').value
   );
@@ -89,11 +91,12 @@ document.getElementById('saveReview').onclick = async () => {
       .classList.add('hidden');
 
     loadReviews();
+    showToast('Review adicionada com sucesso!');
 
   } catch {
     alert('Erro ao salvar review');
   }
-};
+});
 
 function renderResults(tracks) {
   const container = document.getElementById('results');
@@ -123,14 +126,44 @@ async function loadReviews() {
   });
 }
 
-document.getElementById('btnSearch').addEventListener('click', async () => {
+const searchButton = document.getElementById('btnSearch');
+const loadingIndicator = document.getElementById('loadingIndicator');
+const toast = document.getElementById('toast');
+
+function setLoading(isLoading) {
+  searchButton.disabled = isLoading;
+  loadingIndicator.classList.toggle('hidden', !isLoading);
+}
+
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.remove('hidden');
+  setTimeout(() => {
+    toast.classList.add('hidden');
+  }, 2500);
+}
+
+async function doSearch() {
   const q = document.getElementById('query').value.trim();
   if (!q) return;
+
+  setLoading(true);
   try {
     const tracks = await search(q);
     renderResults(tracks);
   } catch (err) {
     alert('Erro na busca');
+  } finally {
+    setLoading(false);
+  }
+}
+
+document.getElementById('btnSearch').addEventListener('click', doSearch);
+
+document.getElementById('query').addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    doSearch();
   }
 });
 
