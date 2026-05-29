@@ -13,6 +13,7 @@ function createReview({ songId, songName, rating, comment }) {
     comment: comment || '',
     createdAt: new Date().toISOString()
   };
+
   reviews.push(review);
   return review;
 }
@@ -21,16 +22,32 @@ function getReviews() {
   return [...reviews];
 }
 
+function searchReviews(music) {
+  return reviews.filter(review =>
+    review.songName
+      .toLowerCase()
+      .includes(music.toLowerCase())
+  );
+}
+
 function deleteReview(id) {
   const idx = reviews.findIndex(r => r.id === id);
+
   if (idx === -1) return false;
+
   reviews.splice(idx, 1);
+
   return true;
 }
 
-// Helper for tests
 function _clear() {
   reviews.length = 0;
 }
 
-module.exports = { createReview, getReviews, deleteReview, _clear };
+module.exports = {
+  createReview,
+  getReviews,
+  searchReviews,
+  deleteReview,
+  _clear
+};

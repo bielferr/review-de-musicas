@@ -2,6 +2,7 @@ const axios = require('axios');
 
 const SPOTIFY_TOKEN_URL = 'https://accounts.spotify.com/api/token';
 const SPOTIFY_SEARCH_URL = 'https://api.spotify.com/v1/search';
+const SPOTIFY_ARTIST_URL = 'https://api.spotify.com/v1/artists';
 
 let tokenCache = {
   token: null,
@@ -56,35 +57,76 @@ async function getAccessToken() {
   }
 }
 
+function mapTrack(t) {
+  return {
+    id: t.id,
+    name: t.name,
+    artists: t.artists.map(a => a.name).join(', '),
+    album: t.album.name,
+    image:
+      t.album.images && t.album.images[0]
+        ? t.album.images[0].url
+        : null,
+    preview_url: t.preview_url
+  };
+}
+
+async function fetchTracks(q, limit, token) {
+  const resp = await axios.get(SPOTIFY_SEARCH_URL, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    params: {
+      q,
+      type: 'track',
+      limit
+    }
+  });
+
+  return resp.data.tracks?.items || [];
+}
+
+async function searchArtist(q, token) {
+  const resp = await axios.get(SPOTIFY_SEARCH_URL, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    params: {
+      q,
+      type: 'artist',
+      limit: 1
+    }
+  });
+
+  return resp.data.artists?.items?.[0] || null;
+}
+
+async function getArtistTopTracks(artistId, token, market = 'US') {
+  const resp = await axios.get(`${SPOTIFY_ARTIST_URL}/${artistId}/top-tracks`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    params: {
+      market
+    }
+  });
+
+  return resp.data.tracks || [];
+}
+
 async function searchTracks(q, limit = 8) {
   try {
     const token = await getAccessToken();
+    let items = await fetchTracks(q, limit, token);
 
-    const resp = await axios.get(SPOTIFY_SEARCH_URL, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      params: {
-        q,
-        type: 'track',
-        limit
+    if (!items.length) {
+      const artist = await searchArtist(q, token);
+      if (artist) {
+        items = await getArtistTopTracks(artist.id, token);
       }
-    });
+    }
 
-    const items = resp.data.tracks.items || [];
-
-    return items.map((t) => ({
-      id: t.id,
-      name: t.name,
-      artists: t.artists.map(a => a.name).join(', '),
-      album: t.album.name,
-      image:
-        t.album.images && t.album.images[0]
-          ? t.album.images[0].url
-          : null,
-      preview_url: t.preview_url
-    }));
-
+    return items.map(mapTrack);
   } catch (error) {
     console.log(
       'ERRO SEARCH TRACKS:',
